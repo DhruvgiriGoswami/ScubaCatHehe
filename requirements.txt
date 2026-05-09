@@ -1,0 +1,10 @@
+mediapipe==0.10.9
+numpy==1.26.4
+opencv-python==4.8.1.78
+opencv-contrib-python==4.8.1.78
+pygame==2.6.1
+imageio==2.37.3
+pillow==10.4.0
+protobuf==3.20.3
+
+#python version used was 3.11.9
