@@ -21,7 +21,7 @@ import pygame #for sound
 # CONFIG
 # ----------------------------
 
-GIF_PATH = "scubaCatGif.gif"  #you can download a new gif and put the path here
+GIF_PATH = ["gifs/scubaCatGif.gif","gifs/catKissGif.gif","gifs/catDance.gif"]  #you can download a new gif and put the path here
 
 HAND_FACE_DISTANCE = 0.25
 WAVE_THRESHOLD = 0.025
@@ -30,25 +30,31 @@ WAVE_HISTORY = 12
 SHOW_DEBUG = False #you can set this to true if you want to see your skeleton in the frames
 
 # ----------------------------
-# LOAD GIF
+# LOAD GIFS
 # ----------------------------
 
-gif_frames = []
+all_gifs = []
 gif_index = 0
 
 try:
-    gif = imageio.mimread(GIF_PATH)
 
-    for frame in gif:
-        frame = cv2.cvtColor(np.array(frame), cv2.COLOR_RGB2BGR)
-        gif_frames.append(frame)
+    for path in GIF_PATH:
 
-    print(f"[+] Loaded GIF with {len(gif_frames)} frames")
+        gif_frames = []
+
+        gif = imageio.mimread(path)
+
+        for frame in gif:
+            frame = cv2.cvtColor(np.array(frame), cv2.COLOR_RGB2BGR)
+            gif_frames.append(frame)
+
+        all_gifs.append(gif_frames)
+
+        print(f"[+] Loaded {path} with {len(gif_frames)} frames")
 
 except Exception as e:
-    print("[!] Could not load scuba_cat.gif")
+    print("[!] Error loading GIFs")
     print(e)
-    print("[!] App will still run without GIF")
 
 
 # ----------------------------
@@ -89,8 +95,8 @@ mp_draw = mp.solutions.drawing_utils
 # ----------------------------
 
 cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
-cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
-cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
+cap.set(cv2.CAP_PROP_FRAME_WIDTH, 960)
+cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 540)
 
 wave_history = deque(maxlen=WAVE_HISTORY)
 
@@ -152,6 +158,7 @@ while True:
     h, w, _ = frame.shape
 
     triggered = False
+    active_pose = False
 
     if results.pose_landmarks:
 
@@ -256,7 +263,7 @@ while True:
 
         cv2.putText(
             frame,
-            "SCUBA SCUBA",
+            "HAPPY MOTHER'S DAY !!!",
             (w//2 - 180, 80),
             cv2.FONT_HERSHEY_DUPLEX,
             1.5,
@@ -264,17 +271,31 @@ while True:
             4
         )
 
-        if gif_frames:
-            gif_frame = gif_frames[gif_index % len(gif_frames)]
+        if all_gifs:
+
             gif_index += 1
 
-            frame = overlay_image(
-                frame,
-                gif_frame,
-                w//2 - 150,
-                h//2 - 150,
-                scale=0.8
-            )
+            positions = [
+                (80, 180),
+                (w//2 - 200, 120),
+                (w - 420, 180)
+            ]
+
+            scales = [1, 1.5, 0.7]
+
+            for i, gif_frames in enumerate(all_gifs):
+
+                gif_frame = gif_frames[gif_index % len(gif_frames)]
+
+                x, y = positions[i]
+
+                frame = overlay_image(
+                    frame,
+                    gif_frame,
+                    x,
+                    y,
+                    scale=scales[i]
+                )
 
     # ----------------------------
     # SHOW WINDOW
