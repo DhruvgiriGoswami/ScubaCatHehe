@@ -13,5 +13,6 @@ For any help or queries, feel free to reach out:
 
 - Mail: dhruvgiri27@gmail.com
 - LinkedIn: https://www.linkedin.com/in/dhruvgiri-goswami-745b01159/
+- Insta: dhruv.g.g
 
 GG
